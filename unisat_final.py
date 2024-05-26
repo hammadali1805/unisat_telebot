@@ -6,6 +6,7 @@ import threading
 import time
 import multiprocessing
 import itertools
+from datetime import datetime
 
 
 # Telegram Bot API Token
@@ -125,37 +126,37 @@ def get_message(args):
     try:
         response = requests.post(url, headers=headers, data=json.dumps(payload))
         response.raise_for_status()  # Raise an exception for non-2xx responses
-        print("here 1", tick)
+        print("1", tick)
         inscription = response.json()["data"]["list"][0]
-        print("here 2", tick)
+        print("2", tick)
         if tick not in prev_inscriptions.keys():
-            print("here 3", tick)
+            print("3", tick)
             prev_inscriptions[tick] = [inscription['inscriptionNumber'], inscription['unitPrice']]
             return None
         else:
-            print("here 4", tick)
+            print("4", tick)
             if prev_inscriptions[tick] == [inscription['inscriptionNumber'], inscription['unitPrice']]:
-                print("here 5", tick)
+                print("5", tick)
                 return None
             else:
-                print("here 6", tick)
+                print("6", tick)
                 prev_inscriptions[tick] = [inscription['inscriptionNumber'], inscription['unitPrice']]
                 convertion_factor = get_convertion_factor()
                 if value : #since value is in form of str $(a float) or None
-                    print("here 7", tick)
+                    print("7", tick)
                     if inscription['unitPrice']*convertion_factor < float(value[1:]):
-                        print("here 8", tick)
+                        print("8", tick)
                         message = f"Tick: {tick}\nQuantity: {inscription['amount']}\nUnit Price: ${inscription['unitPrice']*convertion_factor}\nTotal Price: ${inscription['price']*convertion_factor}\nInscription Number: {inscription['inscriptionNumber']}\n\n\n"
                         return message
                     else:
-                        print("here 9", tick)
+                        print("9", tick)
                         return None
                 else:
-                    print("here 10", tick)
+                    print("10", tick)
                     message = f"Tick: {tick}\nQuantity: {inscription['amount']}\nUnit Price: ${inscription['unitPrice']*convertion_factor}\nTotal Price: ${inscription['price']*convertion_factor}\nInscription Number: {inscription['inscriptionNumber']}\n\n\n"
                     return message
     except Exception as e:
-        print("here 11", tick, e)
+        print("11", tick, e)
         return None
 
 def get_final_message(prev_inscriptions):
@@ -185,10 +186,10 @@ def message_sender():
             time.sleep(10)
         else:
             message = get_final_message(prev_inscriptions=prev_inscriptions)
-            print("------------------------------")
+            print("------------------------------", datetime.now())
         try:
             if message:
-               send_message(chat_id, "ORDINALS\n\n\n"+message)
+               send_message(chat_id, message)
             taken  = time.time() - start
             wait = 45*(len(requirements)/len(api_keys))
             if wait > taken:
@@ -207,8 +208,8 @@ def main():
     dp = updater.dispatcher
 
     # Add command handler for /set, /show
-    dp.add_handler(CommandHandler("seto", set_requirements))
-    dp.add_handler(CommandHandler("showo", show_requirements))
+    dp.add_handler(CommandHandler("set", set_requirements))
+    dp.add_handler(CommandHandler("show", show_requirements))
 
     # Start the bot
     updater.start_polling()
