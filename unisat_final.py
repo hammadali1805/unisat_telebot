@@ -5,7 +5,6 @@ from telegram.ext import Updater, CommandHandler
 import threading
 import time
 import multiprocessing
-import itertools
 from datetime import datetime
 
 
@@ -34,7 +33,6 @@ api_keys = ['f40345eb3ac5af0c295397cc17673924c16c2ed07cd46ff2543298cdc62de5c0',
 'e9a2f71f0ce23d29fa4ea41dbd550a5dc56c34ae7e2d48c8dddcab3386fe9b86',
 ]
 
-api_keys_gen = itertools.cycle(api_keys)
 requirements = {}
 
 # Initialize the bot
@@ -50,7 +48,7 @@ def set_requirements(update, context):
     global prev_inscriptions
     try:
         new_requirements = {}
-        param = update.message.text[5:]
+        param = update.message.text[4:]
         param = param.split(',')
         param = [x.strip() for x in param if x.strip()]
         param = [x.split() for x in param]
@@ -98,15 +96,19 @@ def get_convertion_factor():
 
 
 def get_message(args):
-    prev_inscriptions = args[0]
-    tick = args[1][0]
-    value = args[1][1]
+    api_key_index = args[0]
+    prev_inscriptions = args[1]
+    tick = args[2][0]
+    value = args[2][1]
+
+
+    api_key = api_keys[api_key_index.value%len(api_keys)]
+    api_key_index.value += 1
 
     url = f'https://open-api.unisat.io/v3/market/brc20/auction/list'
-
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': f'Bearer {next(api_keys_gen)}' 
+        'Authorization': f'Bearer {api_key}' 
     }
 
 
@@ -156,15 +158,15 @@ def get_message(args):
                     message = f"Tick: {tick}\nQuantity: {inscription['amount']}\nUnit Price: ${inscription['unitPrice']*convertion_factor}\nTotal Price: ${inscription['price']*convertion_factor}\nInscription Number: {inscription['inscriptionNumber']}\n\n\n"
                     return message
     except Exception as e:
-        print("11", tick, e)
+        print("11", tick, str(e))
         return None
 
-def get_final_message(prev_inscriptions):
+def get_final_message(api_key_index, prev_inscriptions):
     message = ''
     # Number of processes to use
     num_processes = multiprocessing.cpu_count()
     # Create a pool of workers
-    args = [[prev_inscriptions, x] for x in requirements.items()]
+    args = [[api_key_index, prev_inscriptions, x] for x in requirements.items()]
     with multiprocessing.Pool(processes=num_processes) as pool:
         # Map the worker function to the tasks
         results = pool.map(get_message, args)
@@ -175,30 +177,33 @@ def get_final_message(prev_inscriptions):
     
     return message
 
+
 def message_sender():
     chat_id = '5473882256'
     manager = multiprocessing.Manager()
     prev_inscriptions = manager.dict() 
+    api_key_index = manager.Value('i', 0)
+
     while True:
         start = time.time()
         if requirements=={}:
             message = "Set Requirements First!"
             time.sleep(10)
         else:
-            message = get_final_message(prev_inscriptions=prev_inscriptions)
+            message = get_final_message(api_key_index=api_key_index, prev_inscriptions=prev_inscriptions)
             print("------------------------------", datetime.now())
         try:
             if message:
                send_message(chat_id, message)
             taken  = time.time() - start
-            wait = 45*(len(requirements)/len(api_keys))
+            wait = 50*(len(requirements)/len(api_keys))
             if wait > taken:
                 time.sleep(wait-taken)
         except KeyboardInterrupt:
             print("\nExiting...")
             break
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {str(e)}")
             continue
 
 

@@ -5,13 +5,13 @@ from telegram.ext import Updater, CommandHandler
 import threading
 import time
 import multiprocessing
-import itertools
+from datetime import datetime
 
 
 # Telegram Bot API Token
 TOKEN = '6721024126:AAG9ucuRn5GlG1WV_C0US0bKpXs5Cy7icSA'
 
-api_keys = ['6d328035ee2eca21737d835decb5eb691a109954672733a97de3d9a299ecd68f',
+api_keys = [
 '549cb2ee274c05c15b3bef793c0021c04679569a098bdf82ef3712989d881259',
 '2168124d16b20587e5eb59e626171d2ca4614203975d2da10c1ae7ea332a0636',
 '82bc288a7ebb1d33b245e98b595ffe8c7d11ce2b513350d904eef674e2465de7',
@@ -23,10 +23,8 @@ api_keys = ['6d328035ee2eca21737d835decb5eb691a109954672733a97de3d9a299ecd68f',
 'b6d7ade8f71d48c5ec309fbbda50000c539d9577256812dc4c6c79a656ca57c3',
 '447dd889df3277a7a5cbda8c1bb23407cac34316843499fb99b0a393d0d41683',
 '4574d534af39435f91df5e00f132a814cf174aefd5eec200084d495bf9d610e4',
+]
 
-            ]
-
-api_keys_gen = itertools.cycle(api_keys)
 requirements = {}
 
 # Initialize the bot
@@ -42,7 +40,7 @@ def set_requirements(update, context):
     global prev_inscriptions
     try:
         new_requirements = {}
-        param = update.message.text[5:]
+        param = update.message.text[4:]
         param = param.split(',')
         param = [x.strip() for x in param if x.strip()]
         param = [x.split() for x in param]
@@ -90,15 +88,21 @@ def get_convertion_factor():
 
 
 def get_message(args):
-    prev_inscriptions = args[0]
-    tick = args[1][0]
-    value = args[1][1]
+    api_key_index = args[0]
+    prev_inscriptions = args[1]
+    tick = args[2][0]
+    value = args[2][1]
+
+    api_key = api_keys[api_key_index.value%len(api_keys)]
+    api_key_index.value += 1
+
 
     url = f'https://open-api.unisat.io/v3/market/runes/auction/list'
 
+    print(api_key)
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': f'Bearer {next(api_keys_gen)}' 
+        'Authorization': f'Bearer {api_key}' 
     }
 
 
@@ -118,45 +122,45 @@ def get_message(args):
     try:
         response = requests.post(url, headers=headers, data=json.dumps(payload))
         response.raise_for_status()  # Raise an exception for non-2xx responses
-        # print("here 1", tick)
+        print("1", tick)
         inscription = response.json()["data"]["list"][0]
-        # print("here 2", tick)
+        print("2", tick)
         if tick not in prev_inscriptions.keys():
-            # print("here 3", tick)
+            print("3", tick)
             prev_inscriptions[tick] = [inscription['inscriptionNumber'], inscription['unitPrice']]
             return None
         else:
-            # print("here 4", tick)
+            print("4", tick)
             if prev_inscriptions[tick] == [inscription['inscriptionNumber'], inscription['unitPrice']]:
-                # print("here 5", tick)
+                print("5", tick)
                 return None
             else:
-                # print("here 6", tick)
+                print("6", tick)
                 prev_inscriptions[tick] = [inscription['inscriptionNumber'], inscription['unitPrice']]
                 convertion_factor = get_convertion_factor()
                 if value : #since value is in form of str $(a float) or None
-                    # print("here 7", tick)
+                    print("7", tick)
                     if inscription['unitPrice']*convertion_factor < float(value[1:]):
-                        # print("here 8", tick)
-                        message = f"Tick: {tick}\nQuantity: {inscription['amount']}\nUnit Price: ${inscription['unitPrice']*convertion_factor}\nTotal Price: ${inscription['price']*convertion_factor}\nInscription Number: {inscription['inscriptionNumber']}\n\n\n"
+                        print("8", tick)
+                        message = f"Tick: {tick}\nQuantity: {inscription['amount']}\nUnit Price: ${inscription['unitPrice']*convertion_factor}\nTotal Price: ${inscription['price']*convertion_factor}\n\n\n"
                         return message
                     else:
-                        # print("here 9", tick)
+                        print("9", tick)
                         return None
                 else:
-                    # print("here 10", tick)
-                    message = f"Tick: {tick}\nQuantity: {inscription['amount']}\nUnit Price: ${inscription['unitPrice']*convertion_factor}\nTotal Price: ${inscription['price']*convertion_factor}\nInscription Number: {inscription['inscriptionNumber']}\n\n\n"
+                    print("10", tick)
+                    message = f"Tick: {tick}\nQuantity: {inscription['amount']}\nUnit Price: ${inscription['unitPrice']*convertion_factor}\nTotal Price: ${inscription['price']*convertion_factor}\n\n\n"
                     return message
-    except:
-        # print("here 11", tick)
+    except Exception as e:
+        print("11", tick, str(e))
         return None
 
-def get_final_message(prev_inscriptions):
+def get_final_message(api_key_index, prev_inscriptions):
     message = ''
     # Number of processes to use
     num_processes = multiprocessing.cpu_count()
     # Create a pool of workers
-    args = [[prev_inscriptions, x] for x in requirements.items()]
+    args = [[api_key_index, prev_inscriptions, x] for x in requirements.items()]
     with multiprocessing.Pool(processes=num_processes) as pool:
         # Map the worker function to the tasks
         results = pool.map(get_message, args)
@@ -168,29 +172,31 @@ def get_final_message(prev_inscriptions):
     return message
 
 def message_sender():
-    chat_id = '887980481'
+    chat_id = '5473882256'
     manager = multiprocessing.Manager()
-    prev_inscriptions = manager.dict() 
+    prev_inscriptions = manager.dict()
+    api_key_index = manager.Value('i', 0)
+
     while True:
         start = time.time()
         if requirements=={}:
             message = "Set Requirements First!"
             time.sleep(10)
         else:
-            message = get_final_message(prev_inscriptions=prev_inscriptions)
-            # print("------------------------------")
+            message = get_final_message(api_key_index=api_key_index, prev_inscriptions=prev_inscriptions)
+            print("------------------------------", datetime.now())
         try:
             if message:
-               send_message(chat_id, "RUNES\n\n\n"+message)
+               send_message(chat_id, message)
             taken  = time.time() - start
-            wait = 45*(len(requirements)/len(api_keys))
+            wait = 50*(len(requirements)/len(api_keys))
             if wait > taken:
                 time.sleep(wait-taken)
         except KeyboardInterrupt:
             print("\nExiting...")
             break
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {str(e)}")
             continue
 
 
@@ -200,8 +206,8 @@ def main():
     dp = updater.dispatcher
 
     # Add command handler for /set, /show
-    dp.add_handler(CommandHandler("setr", set_requirements))
-    dp.add_handler(CommandHandler("showr", show_requirements))
+    dp.add_handler(CommandHandler("set", set_requirements))
+    dp.add_handler(CommandHandler("show", show_requirements))
 
     # Start the bot
     updater.start_polling()
