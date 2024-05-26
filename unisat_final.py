@@ -11,44 +11,7 @@ import itertools
 # Telegram Bot API Token
 TOKEN = '6754412358:AAGLXMl5ZOpYYw7Yjb5KmiO--qSaDLMsMac'
 
-api_keys = [
-'93654c6d1d7a4894242147a8e1a102f04047d869c70bf13d1b2b317a2ac6d1fb',
-'3347945c3e532f0295e7a786072382c49b92372087e1f193dd82586649e16f21',
-'b4ac73e8ddce26c3b96d7173c10d0ffdecbd34cf9f17af8bd090979cd958d0ad',
-'eb6d380268b19c2d9b9a18cd60a48f0aef1ce222f8840a2ff8745a33121b6a08',
-'0d053671240536da7fbb16603fbc546a62d1336df90f293c68b9426aedeb44ca',
-'aafbb0f0b73a4fb31e716b70c7dbf751116ccbe78b5deff6c84ac3c9bb622caf',
-'58250b2d5428edd150088690259da4ff0e7c9ca3c5c329284ecd6efb9076a808',
-'01ff21444aeddfc5c4875d01d1d80b7bca45f0df8e265f209b192acd823a0ff0',
-'df32dd910ba95152ff871ee6dca831afdf0e8ad0fd236c4b292bb1e95be529d9',
-'bd1acdac826cb5ddfaec2cad6c7e8d1426ef1bef046273c42fadb4d5dc59529c',
-'270387fb3fa2ea06a5a6f99dde982ed4636e48ff665b6b253c93b1f7b9e49242',
-'6b92d718fe97f8d619e4b21846a15c2ce0f1b94085ec1e2ff8fbb66a40ffe9df',
-'83af13b1ed6766a5bfe3e0cb7ea80cbd10771361899e0b409bf59c12349d82aa',
-'b73167f5b35a4948ac60516d8c2bad6bd75a45ed338a0fb96b7c7f6917aa75d0',
-'55a334e79ebeadf441e7157d2ef299c6ff128c95bfb58f5d650b275d24b81d89',
-'ef71fb26534a66be95a23713c375fb7c5d6e5f7bab2da20596bd1aaf184cb129',
-'f2cf08ae10ccabd1999b937234ed3ae5396d996723e623ecfb89e89c54cf065f',
-'f8f84856a8b8b64e90a0b35aad055c0bbbd25672bd267f284589fdd7ad13d9d4',
-'3d499d5e99bdca589702113a99393d3a5ab48cb407b8cb89ac201868192c64cd',
-'dcad58b767f6819beaca34568dcd296156e58d6af072abaef9f00819b4c402f0',
-'442b8755fdeb315339456011416f6a1cebd7b558d646f632955920454bb10882',
-'a6a0ac6f3d262c4ee0db462f32afb993037a26791e07d8182dfcdd89abe7a42e',
-'c17168107e3deac2c6bdc8d54b9cf4fa2bd2dfa5f74deb558bfe1fc9beba4725',
-'ed9fd6160e2c93869f9df18f21f6fbde1dbb58fd9d774cef918fd2037a733967',
-'e419a22deccaa8485f6f9138548d01a9464a6188239e6e7ea2dbd77058136278',
-'3df105de46eee11620ecab5b7fb9541fbbfb3dc2bec7aeba4109d513cd231fee',
-'58c5f088af1d7c37c324e10f65eaea4bf081b46896344127eff2139633e262b4',
-'92627ab93776604644b0bc504156ceb4ab1ab6fea0cb408dc1695261dc807c9f',
-'c06cd296bd4f6cc6b34c22df1f68712e84aa3ea14a53b86a68f55740efad4d88',
-'bc4a21c2129f432c2faed9039ad9cc0ba18a9da779471ed9df69c0ed050e8994',
-'7d7f9b28559e2d9d0bb35d396e7ec08bc9102778711ec82100c333c04456c1c7',
-'e1243e192f8fc4895ae919cf4e9845e79491f3834446c1deaa6edc588fc175f0',
-'e502beb4e419ff11b29c6654e4dcff1c449c1fd8d544dfc8b734241226f40af0',
-'71b508d4a4e467743bd9e6a1ebb59ddbfc3f21969265af9cb94553c981114fc2',
-'3cf690a45ed6606e6a3905e53a573c54342fed4de225495b14466b552252b687',
-'599765ed833b3b3d05fca79f622d8587595674b3cc4271640c84c97ae6a54810',
-'f40345eb3ac5af0c295397cc17673924c16c2ed07cd46ff2543298cdc62de5c0',
+api_keys = ['f40345eb3ac5af0c295397cc17673924c16c2ed07cd46ff2543298cdc62de5c0',
 '97afed70e776b1247ba2ef1120bb994ce484fb5d278cb24e36e58cf3531f0abf',
 '406d7208e02cc058385951fc058780f3077e3cb743384270b46b7ae99e893337',
 '6d7d9af91fa889e8c89ea2b74d6896f244928294e4876b358d062558843b7524',
@@ -162,37 +125,37 @@ def get_message(args):
     try:
         response = requests.post(url, headers=headers, data=json.dumps(payload))
         response.raise_for_status()  # Raise an exception for non-2xx responses
-        # print("here 1", tick)
+        print("here 1", tick)
         inscription = response.json()["data"]["list"][0]
-        # print("here 2", tick)
+        print("here 2", tick)
         if tick not in prev_inscriptions.keys():
-            # print("here 3", tick)
+            print("here 3", tick)
             prev_inscriptions[tick] = [inscription['inscriptionNumber'], inscription['unitPrice']]
             return None
         else:
-            # print("here 4", tick)
+            print("here 4", tick)
             if prev_inscriptions[tick] == [inscription['inscriptionNumber'], inscription['unitPrice']]:
-                # print("here 5", tick)
+                print("here 5", tick)
                 return None
             else:
-                # print("here 6", tick)
+                print("here 6", tick)
                 prev_inscriptions[tick] = [inscription['inscriptionNumber'], inscription['unitPrice']]
                 convertion_factor = get_convertion_factor()
                 if value : #since value is in form of str $(a float) or None
-                    # print("here 7", tick)
+                    print("here 7", tick)
                     if inscription['unitPrice']*convertion_factor < float(value[1:]):
-                        # print("here 8", tick)
+                        print("here 8", tick)
                         message = f"Tick: {tick}\nQuantity: {inscription['amount']}\nUnit Price: ${inscription['unitPrice']*convertion_factor}\nTotal Price: ${inscription['price']*convertion_factor}\nInscription Number: {inscription['inscriptionNumber']}\n\n\n"
                         return message
                     else:
-                        # print("here 9", tick)
+                        print("here 9", tick)
                         return None
                 else:
-                    # print("here 10", tick)
+                    print("here 10", tick)
                     message = f"Tick: {tick}\nQuantity: {inscription['amount']}\nUnit Price: ${inscription['unitPrice']*convertion_factor}\nTotal Price: ${inscription['price']*convertion_factor}\nInscription Number: {inscription['inscriptionNumber']}\n\n\n"
                     return message
-    except:
-        # print("here 11", tick)
+    except Exception as e:
+        print("here 11", tick, e)
         return None
 
 def get_final_message(prev_inscriptions):
@@ -212,7 +175,7 @@ def get_final_message(prev_inscriptions):
     return message
 
 def message_sender():
-    chat_id = '887980481'
+    chat_id = '5473882256'
     manager = multiprocessing.Manager()
     prev_inscriptions = manager.dict() 
     while True:
@@ -222,7 +185,7 @@ def message_sender():
             time.sleep(10)
         else:
             message = get_final_message(prev_inscriptions=prev_inscriptions)
-            # print("------------------------------")
+            print("------------------------------")
         try:
             if message:
                send_message(chat_id, "ORDINALS\n\n\n"+message)
