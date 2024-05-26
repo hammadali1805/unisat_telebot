@@ -9,7 +9,7 @@ import itertools
 
 
 # Telegram Bot API Token
-TOKEN = '6904104534:AAHIdFpFVfFkOozKXzvMkShFZdvBKTp8F1c'
+TOKEN = '6721024126:AAG9ucuRn5GlG1WV_C0US0bKpXs5Cy7icSA'
 
 api_keys = ['6d328035ee2eca21737d835decb5eb691a109954672733a97de3d9a299ecd68f',
 '549cb2ee274c05c15b3bef793c0021c04679569a098bdf82ef3712989d881259',
@@ -168,7 +168,7 @@ def get_final_message(prev_inscriptions):
     return message
 
 def message_sender():
-    chat_id = '-4277678260'
+    chat_id = '887980481'
     manager = multiprocessing.Manager()
     prev_inscriptions = manager.dict() 
     while True:
