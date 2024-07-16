@@ -9,28 +9,10 @@ from datetime import datetime
 
 
 # Telegram Bot API Token
-TOKEN = '6754412358:AAGLXMl5ZOpYYw7Yjb5KmiO--qSaDLMsMac'
+TOKEN = 'YOUR TOKEN'
 
-api_keys = ['f40345eb3ac5af0c295397cc17673924c16c2ed07cd46ff2543298cdc62de5c0',
-'97afed70e776b1247ba2ef1120bb994ce484fb5d278cb24e36e58cf3531f0abf',
-'406d7208e02cc058385951fc058780f3077e3cb743384270b46b7ae99e893337',
-'6d7d9af91fa889e8c89ea2b74d6896f244928294e4876b358d062558843b7524',
-'4b9aee52c7e773d7ee200dc9885ecfde40ce278900dbd173b59f53ad534caed1',
-'32c18a3e60126ab83dbb0aa026d684ec296a09196b5610086bf5938f58718457',
-'5e97cff44beffeccc37c6138d25d1c87f7fe64746ad10e375b4c428f0ac38e16',
-'a437c67b944778dbd51a588583473946054a0743f499d10d64c2d74fb0969c6b',
-'37896a2be319ee075eca4bc13c24db22f57564bca958da34d5d76d24a976ef8e',
-'84b09716f24f6d507d12526e160cabe4fab5971774361ecc914259c3572013f3',
-'4565baddf5fe10ce2666935c6d03aa68c7c9079814c46e5202b226ee9bf2fc83',
-'91db9b94aa12e15d6372de5c4058646c65e931e6f54cdb8b1d92086dec651ef9',
-'650ac28e362f5cfe6d38edb8a22a9914b6c3d70e57ca8d0c5fdb0632e4a899e1',
-'aaa4d7c5bb3d5218a3aa2d944c50dbacfc94def3077a5dd600a66f3b6154ac31',
-'0fbc8e4651b6bef2ba67170d5bb921be6af5258a3c44aee36bcc31611e448042',
-'d96986da56cab739bf221f0182a92a2c2d43dde0cee712091d68c8e315df1d67',
-'d2b5a3aabcd6f35bc243066eedfc1327f4b092cc4971ceb319208533704629db',
-'35c62dff08edb83ca7a5c53225fc975d51d5a3715a31e14b430976925a04bbed',
-'6a101442c0b6a6d51697e105dd3abed056a569b80eb0af92770b3a10fdd9502b',
-'e9a2f71f0ce23d29fa4ea41dbd550a5dc56c34ae7e2d48c8dddcab3386fe9b86',
+api_keys = [
+    "ENTER YOUR API KEYS"
 ]
 
 requirements = {}
@@ -80,7 +62,7 @@ def get_convertion_factor():
     }
     headers = {
     'Accepts': 'application/json',
-    'X-CMC_PRO_API_KEY': '090cddf5-43a9-4fc9-819d-f310f94570b3',
+    'X-CMC_PRO_API_KEY': 'YOUR API KEY',
     }
 
     try:
@@ -179,7 +161,7 @@ def get_final_message(api_key_index, prev_inscriptions):
 
 
 def message_sender():
-    chat_id = '5473882256'
+    chat_id = 'YOUR CHAT ID'
     manager = multiprocessing.Manager()
     prev_inscriptions = manager.dict() 
     api_key_index = manager.Value('i', 0)
