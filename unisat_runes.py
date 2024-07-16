@@ -9,20 +9,10 @@ from datetime import datetime
 
 
 # Telegram Bot API Token
-TOKEN = '6721024126:AAG9ucuRn5GlG1WV_C0US0bKpXs5Cy7icSA'
+TOKEN = 'YOUR TOKEN'
 
 api_keys = [
-'549cb2ee274c05c15b3bef793c0021c04679569a098bdf82ef3712989d881259',
-'2168124d16b20587e5eb59e626171d2ca4614203975d2da10c1ae7ea332a0636',
-'82bc288a7ebb1d33b245e98b595ffe8c7d11ce2b513350d904eef674e2465de7',
-'a3bebe5090256c82f6a3a87dbf5e56b11efcaed8cafe1e48c40dbadd5d154fc1',
-'d9a407e7c49af1368991f8bcbd62b0a055ba1e6db8818cd67d68abc80f02944c',
-'13d8901c38289e65606deef2246af53f94114c530740067462a96231047f7f78',
-'19ae690c5db593437a688c4c412c435520f5593830d1078d613743f7ec449ddc',
-'e2005c425d01f71115f6ed25f27a080a2216e5644d9bed8b27e56c7f1a5f703d',
-'b6d7ade8f71d48c5ec309fbbda50000c539d9577256812dc4c6c79a656ca57c3',
-'447dd889df3277a7a5cbda8c1bb23407cac34316843499fb99b0a393d0d41683',
-'4574d534af39435f91df5e00f132a814cf174aefd5eec200084d495bf9d610e4',
+    "ENTER YOUR API KEYS HERE"
 ]
 
 requirements = {}
@@ -72,7 +62,7 @@ def get_convertion_factor():
     }
     headers = {
     'Accepts': 'application/json',
-    'X-CMC_PRO_API_KEY': '090cddf5-43a9-4fc9-819d-f310f94570b3',
+    'X-CMC_PRO_API_KEY': 'API KEY',
     }
 
     try:
@@ -172,7 +162,7 @@ def get_final_message(api_key_index, prev_inscriptions):
     return message
 
 def message_sender():
-    chat_id = '5473882256'
+    chat_id = 'YOUR CHAT ID'
     manager = multiprocessing.Manager()
     prev_inscriptions = manager.dict()
     api_key_index = manager.Value('i', 0)
